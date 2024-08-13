@@ -11,19 +11,18 @@ export default function Filter() {
     fetchIngredients();
   }, []);
 
-  const handleFilterChange = (event, ingredientId) => {
-    const isChecked = event.target.checked;
-    setFilter(ingredientId, isChecked);
+  const handleFilterChange = (ingredientId, event) => {
+    setFilter(ingredientId, event.target.checked);
   };
 
   return (
-    <div className="filter">
-      <h3 className="filter__heading">Filter by Ingredient</h3>
-      <ul id="filterList" className="filter__list">
+    <div>
+      <h3> Filter by Ingredient </h3>
+      <ul>
         {ingredients.map((ingredient) => (
           <li key={ingredient.id}>
             <label>
-              <input type="checkbox" onChange={(event) => handleFilterChange(event, ingredient.id)} />
+              <input type="checkbox" onChange={(event) => handleFilterChange(ingredient.id, event)} />
               {ingredient.name}
             </label>
           </li>

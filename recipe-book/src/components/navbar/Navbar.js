@@ -15,7 +15,7 @@ const Navbar = () => {
       <h1 className="navbar__title">Recipe App</h1>
       <button className="cart-icon" onClick={toggleCartModal}>
         <FontAwesomeIcon icon={faShoppingCart} />
-        <span className="cart-text">Cart</span>
+        <span>Cart</span>
       </button>
       <CartModal isOpen={isCartOpen} onClose={toggleCartModal} /> 
     </nav>

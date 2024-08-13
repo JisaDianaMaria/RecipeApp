@@ -11,10 +11,11 @@ const Favorites = () => {
   };
 
   return (
-    <div className="favorites">
-      <h3 className="favorites__heading" onClick={handleNavigateToFavorites}>
+    <div>
+      <h3 onClick={handleNavigateToFavorites}>
         Favorites
       </h3>
+      
       {favoriteRecipes.length === 0 ? (
         <p>No favorite recipes yet.</p>
       ) : (
@@ -25,7 +26,7 @@ const Favorites = () => {
               src={`${process.env.PUBLIC_URL}/pictures/${recipe.title}.jpg`}
               alt={recipe.title}
             />
-            <p className="favorite-item__name">{recipe.title}</p>
+            <p> {recipe.title} </p>
           </div>
         ))
       )}

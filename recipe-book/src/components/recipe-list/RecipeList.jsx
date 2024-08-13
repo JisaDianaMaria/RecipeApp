@@ -40,7 +40,7 @@ const RecipeList = () => {
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
-    }, 2000); 
+    }, 4000); 
   };
 
   const renderRecipes = () => {

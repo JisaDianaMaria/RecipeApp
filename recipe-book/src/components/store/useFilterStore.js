@@ -97,11 +97,6 @@ const useFilterStore = create((set, get) => ({
     const recipe = await get().fetchRecipeById(recipeId);
     if (!recipe) return;
 
-    if (quantity > recipe.quantity) {
-      alert(`Only ${recipe.quantity} items of ${recipe.title} are available.`);
-      return;
-  }
-
     set((state) => {
       const updatedCart = [...state.cart];
       const existingItem = updatedCart.find(item => item.id === recipeId);
@@ -118,15 +113,29 @@ const useFilterStore = create((set, get) => ({
   },
 
 
-  updateCartQuantity: (recipeId, quantity) => { 
+  incrementQuantity: (itemId) => {
     set((state) => {
-      const updatedCart = state.cart.map(item => 
-        item.id === recipeId ? { ...item, quantity } : item
+      const updatedCart = state.cart.map(item =>
+        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
       );
-      localStorage.setItem('cart', JSON.stringify(updatedCart)); 
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
       return { cart: updatedCart };
     });
   },
+
+  decrementQuantity: (itemId) => {
+    set((state) => {
+      const item = state.cart.find(i => i.id === itemId);
+      if (item && item.quantity > 1) { 
+        const updatedCart = state.cart.map(i =>
+          i.id === itemId ? { ...i, quantity: i.quantity - 1 } : i
+        );
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        return { cart: updatedCart };
+      }
+    });
+  },
+  
 
 
   removeFromCart: (recipeId) => {
@@ -165,6 +174,24 @@ const useFilterStore = create((set, get) => ({
     });
   },
 
+  placeOrder: async () => {
+    const cart = get().cart;
+    try {
+      const orderItems = cart.map(item => ({
+        recipeId: item.id,
+        quantity: item.quantity,
+      }));
+  
+      await axios.post('http://localhost:8081/api/recipes/updateQuantity', orderItems);
+      get().clearCart(); 
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to place order', error);
+      return { success: false };
+    }
+  },
+
+
   fetchRecipes: async () => {
     const filters = get().filters;
     const ids = Object.keys(filters);
@@ -197,19 +224,20 @@ const useFilterStore = create((set, get) => ({
 
   fetchRecipeById: async (id) => {
     const cache = get().recipeCache;
-    if (cache[id]) return cache[id];
+    if (cache[id]) return cache[id];  
   
     try {
-      const resp = await axios.get(`http://localhost:8081/api/recipes/${id}`);
+      const resp = await axios.get(`http://localhost:8081/api/recipes/${id}`);  
       set((state) => ({
-        recipeCache: { ...state.recipeCache, [id]: resp.data, },
+        recipeCache: { ...state.recipeCache, [id]: resp.data },  
       }));
-      return resp.data;
+      return resp.data;  
     } catch (error) {
       console.log('Error fetching recipe by id:', error);
-      return null;
+      return null;  
     }
-  }
+  },
+  
 }));
 
 export default useFilterStore;

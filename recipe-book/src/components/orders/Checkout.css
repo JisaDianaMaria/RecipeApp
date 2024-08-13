@@ -1,28 +1,20 @@
-.checkout-container {
-    padding: 20px;
-  }
-  
-  .checkout-list {
-    list-style-type: none;
-  }
-  
+
   .checkout-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
+    margin-right: 10%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
   }
   
-  .checkout-item__title {
-    font-size: 18px;
-  }
-  
-  .quantity-controls {
-    display: flex;
-    align-items: center;
+
+  .checkout-item span:nth-child(1),
+  .checkout-item span:nth-child(3) {
+  width: 80px; 
+  text-align: center;
   }
   
   .quantity-controls button {
@@ -33,12 +25,7 @@
     margin: 0 5px;
     border-radius: 5px;
   }
-  
-  .quantity-controls span {
-    width: 30px;
-    text-align: center;
-  }
-  
+   
   .remove-item-btn {
     background-color: red;
     color: white;
@@ -51,16 +38,7 @@
   .remove-item-btn:hover {
     background-color: darkred;
   }
-  
-  .checkout-summary {
-    margin-top: 20px;
-  }
-  
-  .checkout-buttons {
-    display: flex;
-    justify-content: space-between;
-  }
-  
+
   .checkout-btn {
     background-color: #28a745;
     color: white;
@@ -89,6 +67,22 @@
     background-color: black;
     color: white;
   }
+
+  .success-message {
+    color: green;
+    font-size: 18px;
+    font-weight: bold; 
+    margin-bottom: 20px;
+    margin-left: 30px; 
+  }
+
+  
+  
+  
+
+
+  
+  
   
 
   

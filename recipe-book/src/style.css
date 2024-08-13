@@ -50,10 +50,6 @@ body {
     text-decoration: underline;
 }
 
-.favorites {
-    margin-top: 40px;
-}
-
 
 .favorite-item {
     display: flex;

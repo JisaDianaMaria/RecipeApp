@@ -20,6 +20,7 @@ const RecipeContent = () => {
   const [newComment, setNewComment] = useState('');
   const [quantity, setQuantity] = useState(1); 
   const [showPopup, setShowPopup] = useState(false);
+  const [outOfStockPopup, setOutOfStockPopup] = useState(false);
 
   useEffect(() => {
     const getRecipe = async () => {
@@ -62,8 +63,8 @@ const RecipeContent = () => {
   };
 
   const handleAddToCart = () => {
-    addToCart(recipe.id, quantity); 
-    triggerPopup();
+      addToCart(recipe.id, quantity); 
+      triggerPopup();
   };
 
   const triggerPopup = () => {
@@ -78,11 +79,21 @@ const RecipeContent = () => {
   };
 
   const incrementQuantity = () => {
-    setQuantity(prevQuantity => prevQuantity + 1);
+    setQuantity(prevQuantity => {
+      const newQuantity = prevQuantity + 1;
+      if (newQuantity > recipe.quantity) {
+        setOutOfStockPopup(true);
+        setTimeout(() => {
+          setOutOfStockPopup(false);
+        }, 2000);
+        return recipe.quantity;
+      }
+      return newQuantity;
+    });
   };
 
   const decrementQuantity = () => {
-    setQuantity(prevQuantity => (prevQuantity > 1 ? prevQuantity - 1 : 0));
+    setQuantity(prevQuantity => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };
 
   if (!recipe) {
@@ -90,10 +101,15 @@ const RecipeContent = () => {
   }
 
   return (
-    <div className="recipe-detail">
+    <div>
       {showPopup && (
         <div className="popup-notification1">
           Product added to cart!
+        </div>
+      )}
+      {outOfStockPopup && (
+        <div className="popup-notification2">
+          Only {recipe.quantity} items left in stock!
         </div>
       )}
       <div className="recipe-detail__header">
@@ -101,7 +117,7 @@ const RecipeContent = () => {
         <div className={`heart ${isFavorite ? 'favorite' : ''}`} onClick={handleFavoriteClick}></div>
       </div>
       <p><strong>Ingredients:</strong></p>
-      <ul className="recipe-detail__ingredients">
+      <ul>
         {recipe.ingredients.map((ingredient, index) => (
           <li
             key={index}
@@ -113,36 +129,42 @@ const RecipeContent = () => {
         ))}
       </ul>
       <p><strong>Method:</strong></p>
-      <p className="recipe-detail__method">{recipe.method}</p>
+      <p> {recipe.method} </p>
 
       <div className="recipe-detail__quantity-container">
         <div className="recipe-detail__quantity">
-          <button onClick={decrementQuantity} className="recipe-detail__quantity-btn">-</button>
+          <button onClick={decrementQuantity} className="recipe-detail__quantity-btn" disabled={recipe.quantity === 0}>-</button>
           <input 
             type="number" 
             value={quantity} 
             className="recipe-detail__quantity-input"
+            onChange={(e) => setQuantity(Math.min(e.target.value, recipe.quantity))}
+            disabled={recipe.quantity === 0}
           />
-          <button onClick={incrementQuantity} className="recipe-detail__quantity-btn">+</button>
+          <button onClick={incrementQuantity} className="recipe-detail__quantity-btn" disabled={recipe.quantity === 0}>+</button>
         </div>
-        <button onClick={handleAddToCart} className="recipe-detail__btn" >
-          {'Add to Cart'}
-        </button>
+        {recipe.quantity === 0 ? (
+          <span className="message">Out of Stock!</span>
+        ) : (
+          <button onClick={handleAddToCart} className="recipe-detail__btn">
+            {'Add to Cart'}
+          </button>
+        )}
       </div>
 
-      <div className="recipe-detail__comments-section">
+      <div>
         <div className="recipe-detail__comments-header">
           <h3>Comments</h3>
           <button 
             onClick={handleAddComment} 
-            className="recipe-detail__btn recipe-detail__add-comment-btn"
+            className="recipe-detail__add-comment-btn"
           >
             Add Comment
           </button>
         </div>
-        <ul className="recipe-detail__comments-list">
+        <ul>
           {comments.map((comment, index) => (
-            <li key={index} className="recipe-detail__comment">{comment}</li>
+            <li key={index}>{comment}</li>
           ))}
         </ul>
         <textarea
@@ -152,7 +174,7 @@ const RecipeContent = () => {
           className="recipe-detail__comment-input"
         />
       </div>
-      <button onClick={handleBackClick} className="recipe-detail__btn recipe-detail__back-btn">Back to Home</button>
+      <button onClick={handleBackClick} className="recipe-detail__btn">Back to Home</button>
     </div>
   );
 };
