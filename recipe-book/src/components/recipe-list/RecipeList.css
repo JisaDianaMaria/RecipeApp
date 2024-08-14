@@ -71,10 +71,7 @@
     padding: 0;
   }
   
-  .recipe__ingredient {
-    padding: 5px 0;
-  }
-  
+
   .popup-notification {
     position: absolute;
     bottom: -50px; 
@@ -87,5 +84,21 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
   }
+
+  .popup-notification22 {
+    position: absolute;
+    bottom: -50px; 
+    left: 50%;
+    transform: translateX(-50%);
+    background-color:red;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+
+  
   
   

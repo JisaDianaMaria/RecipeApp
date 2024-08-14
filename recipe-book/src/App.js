@@ -6,6 +6,9 @@ import Favorites from './components/favorites/Favorites';
 import RecipeContent from './components/recipe-content/RecipeContent';
 import Navbar from './components/navbar/Navbar';
 import Checkout from './components/orders/Checkout';
+import SignUp from './components/authentification/SignUp';
+import Login from './components/authentification/LogIn';
+import HomePage from './components/authentification/HomePage';
 
 import './style.css';
 
@@ -19,13 +22,13 @@ const App = () => {
 
 const AppContent = () => {
   const location = useLocation();
-  const isCheckoutPage = location.pathname === '/checkout';
+  const isPageWithoutSidebar = ['/','/log-in', '/sign-up', '/checkout'].includes(location.pathname);
 
   return (
-    <div className="App">
+    <div className={`App ${isPageWithoutSidebar ? 'no-sidebar' : ''}`}>
       <Navbar />
       <div className="container1 mt-5">
-        {!isCheckoutPage && (
+        {!isPageWithoutSidebar && ( 
           <div className="sidebar bottom-0">
             <Filter />
             <Favorites />
@@ -33,11 +36,14 @@ const AppContent = () => {
         )}
         <div className="content">
           <Routes>
-            <Route path="/" element={<Navigate to="/recipes" />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/recipes" element={<RecipeList />} />
             <Route path="/recipes/:id" element={<RecipeContent />} />
             <Route path="/recipes/favorites" element={<Favorites />} />
             <Route path="/checkout" element={<Checkout />} /> 
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/log-in" element={<Login />} />
+
           </Routes>
         </div>
       </div>

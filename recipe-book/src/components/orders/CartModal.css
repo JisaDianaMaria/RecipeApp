@@ -47,6 +47,7 @@
     width: 400px;
     max-width: 90%;
 }
+
   
 .cart-modal h2 {
     margin-top: 0;
@@ -119,12 +120,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
 
 .quantity-controls {
     display: flex;
@@ -142,16 +137,6 @@
     transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.quantity-controls button:hover {
-    background-color: #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.quantity-controls span {
-    min-width: 20px;
-    text-align: center;
-    font-size: 16px;
-}
 
 .remove-item-btn {
     background-color: white; 

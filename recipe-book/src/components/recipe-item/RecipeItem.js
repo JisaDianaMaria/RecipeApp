@@ -1,15 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useFilterStore from '../store/useFilterStore';
 import './RecipeItem.css';
 
-const RecipeItem = ({ recipe, view, onAddToCart }) => {
+const RecipeItem = ({ recipe, view }) => {
   const addToCart = useFilterStore(state => state.addToCart);
+  const cart = useFilterStore(state => state.cart);
+
+  const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+  const [showMaxQuantityPopup, setShowMaxQuantityPopup] = useState(false);
 
   const handleAddToCart = () => {
-    if (recipe.quantity > 0) {
+    const cartItem = cart.find(item => item.id === recipe.id);
+    const cartQuantity = cartItem ? cartItem.quantity : 0;
+  
+    if (cartQuantity < recipe.quantity) {
       addToCart(recipe.id, 1);
-      onAddToCart(); 
+      setShowConfirmationPopup(true);
+      setTimeout(() => {
+        setShowConfirmationPopup(false);
+      }, 4000);
+    } else {
+      setShowMaxQuantityPopup(true);
+      setTimeout(() => {
+        setShowMaxQuantityPopup(false);
+      }, 4000);
     }
   };
 
@@ -20,6 +35,7 @@ const RecipeItem = ({ recipe, view, onAddToCart }) => {
           <Link to={`/recipes/${recipe.id}`} className="sidebar__link">
             {recipe.title}
           </Link>
+          
           {recipe.quantity === 0 ? (
             <span className="message">Out of Stock!</span>
           ) : (
@@ -54,6 +70,18 @@ const RecipeItem = ({ recipe, view, onAddToCart }) => {
               {'Add to Cart'}
             </button>
           )}
+        </div>
+      )}
+
+      {showConfirmationPopup && (
+        <div className="popup-notification">
+          Product added to cart!
+        </div>
+      )}
+
+      {showMaxQuantityPopup && (
+        <div className="popup-notification22">
+          Maximum quantity reached, product not added to cart!
         </div>
       )}
     </>

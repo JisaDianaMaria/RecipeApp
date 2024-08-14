@@ -114,5 +114,21 @@ body {
     text-decoration: underline;
 }
 
+.no-sidebar .container1 {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+}
+
+.no-sidebar .content {
+    margin-left: 0; 
+    width: 100%; 
+    max-width: 1000px; 
+    text-align: center; 
+}
+
+
+
   
   

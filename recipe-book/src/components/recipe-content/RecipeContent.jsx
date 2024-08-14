@@ -6,20 +6,20 @@ import './RecipeContent.css';
 const RecipeContent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const addFavoriteRecipe = useStore(state => state.addFavorite);
   const removeFavoriteRecipe = useStore(state => state.removeFavorite);
   const isFavoriteRecipe = useStore(state => state.isFavoriteRecipe);
   const fetchRecipeById = useStore(state => state.fetchRecipeById);
-  const addToCart = useStore(state => state.addToCart); 
+  const addToCart = useStore(state => state.addToCart);
 
   const [recipe, setRecipe] = useState(null);
   const [purchasedIngredients, setPurchasedIngredients] = useState([]);
   const [isFavorite, setIsFavorite] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  const [quantity, setQuantity] = useState(1); 
-  const [showPopup, setShowPopup] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [showConfirmationPopup, setshowConfirmationPopup] = useState(false);
   const [outOfStockPopup, setOutOfStockPopup] = useState(false);
 
   useEffect(() => {
@@ -62,20 +62,26 @@ const RecipeContent = () => {
     }
   };
 
-  const handleAddToCart = () => {
-      addToCart(recipe.id, quantity); 
-      triggerPopup();
-  };
-
-  const triggerPopup = () => {
-    setShowPopup(true);
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 2000); 
-  };
-
   const handleBackClick = () => {
     navigate('/recipes');
+  };
+
+  const handleAddToCart = () => {
+    const cartItem = useStore.getState().cart.find(item => item.id === recipe.id);
+    const cartQuantity = cartItem ? cartItem.quantity : 0;
+
+    if (cartQuantity + quantity <= recipe.quantity) {
+      addToCart(recipe.id, quantity);
+      setshowConfirmationPopup(true);
+      setTimeout(() => {
+        setshowConfirmationPopup(false);
+      }, 2000);
+    } else {
+      setOutOfStockPopup(true);
+      setTimeout(() => {
+        setOutOfStockPopup(false);
+      }, 2000);
+    }
   };
 
   const incrementQuantity = () => {
@@ -102,16 +108,17 @@ const RecipeContent = () => {
 
   return (
     <div>
-      {showPopup && (
+      {outOfStockPopup && (
+        <div className="popup-notification2">
+          Maximum quantity reached, product not added to cart!
+        </div>
+      )}
+      {showConfirmationPopup && (
         <div className="popup-notification1">
           Product added to cart!
         </div>
       )}
-      {outOfStockPopup && (
-        <div className="popup-notification2">
-          Only {recipe.quantity} items left in stock!
-        </div>
-      )}
+
       <div className="recipe-detail__header">
         <h2 className="recipe-detail__title">{recipe.title}</h2>
         <div className={`heart ${isFavorite ? 'favorite' : ''}`} onClick={handleFavoriteClick}></div>
@@ -134,9 +141,9 @@ const RecipeContent = () => {
       <div className="recipe-detail__quantity-container">
         <div className="recipe-detail__quantity">
           <button onClick={decrementQuantity} className="recipe-detail__quantity-btn" disabled={recipe.quantity === 0}>-</button>
-          <input 
-            type="number" 
-            value={quantity} 
+          <input
+            type="number"
+            value={quantity}
             className="recipe-detail__quantity-input"
             onChange={(e) => setQuantity(Math.min(e.target.value, recipe.quantity))}
             disabled={recipe.quantity === 0}
@@ -155,8 +162,8 @@ const RecipeContent = () => {
       <div>
         <div className="recipe-detail__comments-header">
           <h3>Comments</h3>
-          <button 
-            onClick={handleAddComment} 
+          <button
+            onClick={handleAddComment}
             className="recipe-detail__add-comment-btn"
           >
             Add Comment

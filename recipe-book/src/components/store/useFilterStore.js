@@ -102,10 +102,14 @@ const useFilterStore = create((set, get) => ({
       const existingItem = updatedCart.find(item => item.id === recipeId);
 
       if (existingItem) {
-        existingItem.quantity += quantity; 
-      } else {
-        updatedCart.push({ ...recipe, quantity }) 
-      }
+        if (existingItem.quantity + quantity <= recipe.quantity) {
+            existingItem.quantity += quantity;
+        } else {
+            existingItem.quantity = recipe.quantity; 
+        }
+    } else {
+        updatedCart.push({ ...recipe, quantity, stock: recipe.quantity }) 
+    }
 
       localStorage.setItem('cart', JSON.stringify(updatedCart)); 
       return { cart: updatedCart };
@@ -115,7 +119,7 @@ const useFilterStore = create((set, get) => ({
 
   incrementQuantity: (itemId) => {
     set((state) => {
-      const updatedCart = state.cart.map(item =>
+      const updatedCart = state.cart.map(item => 
         item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
       );
       localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -137,7 +141,6 @@ const useFilterStore = create((set, get) => ({
   },
   
 
-
   removeFromCart: (recipeId) => {
     set((state) => {
       const updatedCart = state.cart.filter(item => item.id !== recipeId);
@@ -146,31 +149,11 @@ const useFilterStore = create((set, get) => ({
     });
   },
 
+
   clearCart: () => {
     set(() => {
       localStorage.removeItem('cart'); 
       return { cart: [] };
-    });
-  },
-
-  count: () => {
-    const checkboxes = get().checkboxes;
-    return Object.values(checkboxes).filter(Boolean).length;
-  },
-
-  prev: () => {
-    set((state) => {
-      if (state.currentPage > 1) {
-        return { currentPage: state.currentPage - 1 };
-      }
-    });
-  },
-
-  next: () => {
-    set((state) => {
-      if (state.currentPage < state.totalPages) {
-        return { currentPage: state.currentPage + 1 };
-      }
     });
   },
 
@@ -192,6 +175,30 @@ const useFilterStore = create((set, get) => ({
   },
 
 
+
+  ///PAGINATION
+  count: () => {
+    const checkboxes = get().checkboxes;
+    return Object.values(checkboxes).filter(Boolean).length;
+  },
+
+  prev: () => {
+    set((state) => {
+      if (state.currentPage > 1) {
+        return { currentPage: state.currentPage - 1 };
+      }
+    });
+  },
+
+  next: () => {
+    set((state) => {
+      if (state.currentPage < state.totalPages) {
+        return { currentPage: state.currentPage + 1 };
+      }
+    });
+  },
+
+  
   fetchRecipes: async () => {
     const filters = get().filters;
     const ids = Object.keys(filters);

@@ -20,7 +20,9 @@ const CartItems = ({ showPrice = true }) => {
               -
             </button>
             <span>{item.quantity}</span>
-            <button onClick={() => incrementQuantity(item.id)} >+</button>
+            <button onClick={() => incrementQuantity(item.id)} disabled={item.quantity >= item.stock}>
+              +
+            </button>
           </div>
           {showPrice && <span>${Math.round(item.price * item.quantity * 100) / 100}</span>}
           <button className="remove-item-btn" onClick={() => removeFromCart(item.id)}>X</button>

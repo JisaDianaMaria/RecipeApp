@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RecipeItem from '../recipe-item/RecipeItem';
-import useFilterStore from '../store/useFilterStore'; 
+import useFilterStore from '../store/useFilterStore';
 import Pagination from '../pagination/Pagination';
 import './RecipeList.css';
 
@@ -13,10 +13,10 @@ const RecipeList = () => {
 
   const navigate = useNavigate();
   const [layout, setLayout] = useState('list');
-  const [showPopup, setShowPopup] = useState(false);
+
 
   useEffect(() => {
-      fetchRecipes();
+    fetchRecipes();
   }, [filters, currentPage]);
 
   useEffect(() => {
@@ -26,27 +26,19 @@ const RecipeList = () => {
     }
   }, []);
 
-  const handleRecipeClick = (recipeId) => {
-    navigate(`/recipes/${recipeId}`);
-  };
-
   const toggleLayout = () => {
     const newLayout = layout === 'list' ? 'grid' : 'list';
     setLayout(newLayout);
     localStorage.setItem('layout', newLayout);
   };
 
-  const handleShowPopup = () => {
-    setShowPopup(true);
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 4000); 
+  const handleRecipeClick = (recipeId) => {
+    navigate(`/recipes/${recipeId}`);
   };
 
   const renderRecipes = () => {
     return filteredRecipes.map((recipe, i) => (
-      <RecipeItem key={i} recipe={recipe} view={layout} onClick={() => handleRecipeClick(recipe.id)} 
-      onAddToCart={handleShowPopup} />
+      <RecipeItem key={i} recipe={recipe} view={layout} onClick={() => handleRecipeClick(recipe.id)} />
     ));
   };
 
@@ -69,11 +61,6 @@ const RecipeList = () => {
         </div>
       )}
       <Pagination />
-      {showPopup && (
-        <div className="popup-notification">
-          Product added to cart!
-        </div>
-      )}
     </div>
   );
 };
